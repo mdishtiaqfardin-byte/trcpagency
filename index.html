@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সার্ভিস বুকিং ও ম্যানেজমেন্ট সিস্টেম</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter / Noto Sans Bengali -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#16a34a',
+                            600: '#15803d',
+                            700: '#15803d',
+                            dark: '#0f172a',
+                            accent: '#e11d48',
+                            gold: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="app.navigateTo('home')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-rose-900/30">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-rose-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">
+                            সার্ভিস পোর্টাল
+                        </span>
+                        <span class="block text-[10px] text-slate-400 tracking-wider">PREMIUM BOOKING SYSTEM</span>
+                    </div>
+                </div>
+
+                <!-- Right Action Buttons -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <!-- Client User Badge / Auth Button -->
+                    <div id="nav-user-area">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Admin Portal Trigger Button -->
+                    <button onclick="app.openAdminAuthModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm border border-slate-700 transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-lock text-amber-400"></i>
+                        <span class="hidden sm:inline">অ্যাডমিন</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- CLIENT SECTION VIEWS -->
+        <div id="client-view-container" class="space-y-6">
+
+            <!-- HOME / SERVICE SELECTION -->
+            <div id="view-home" class="view-panel space-y-8">
+                <!-- Banner -->
+                <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-rose-950 to-slate-900 border border-slate-800 p-6 sm:p-10 shadow-2xl">
+                    <div class="relative z-10 max-w-2xl space-y-4">
+                        <span class="px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-full text-xs font-semibold">
+                            🔥 ১০০% নিরাপদ ও বিশ্বস্ত সার্ভিস
+                        </span>
+                        <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+                            আপনার পছন্দের সার্ভিস বেছে নিন সহজেই
+                        </h1>
+                        <p class="text-slate-300 text-sm sm:text-base">
+                            রিয়েল সার্ভিস, ভিডিও সার্ভিস এবং প্রিমিয়াম লাইভ শো বুকিং এর জন্য একমাত্র বিশ্বাসযোগ্য মাধ্যম।
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Main Services Categories Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- 1. Real Service -->
+                    <div onclick="app.startBooking('real')" class="group relative rounded-2xl bg-slate-900/80 border border-slate-800 p-6 hover:border-rose-500/50 hover:bg-slate-800/80 transition duration-300 cursor-pointer shadow-lg hover:shadow-rose-900/20 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 text-2xl group-hover:scale-110 transition">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white group-hover:text-rose-400 transition">রিয়েল সার্ভিস</h2>
+                            <p class="text-slate-400 text-sm">
+                                আপনার শহরের নির্দিষ্ট এলাকা বা হোটেলে সরাসরি রিয়েল অ্যাপয়েন্টমেন্ট বুকিং করুন।
+                            </p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <p><i class="fa-solid fa-check text-emerald-400 mr-1"></i> ফ্ল্যাট ও হোটেল ক্যাটাগরি</p>
+                                <p><i class="fa-solid fa-check text-emerald-400 mr-1"></i> ১০ দিনের অগ্রিম বুকিং</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-rose-400 font-semibold text-sm">
+                            <span>বুকিং শুরু করুন</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <!-- 2. Video Service -->
+                    <div onclick="app.startBooking('video')" class="group relative rounded-2xl bg-slate-900/80 border border-slate-800 p-6 hover:border-amber-500/50 hover:bg-slate-800/80 transition duration-300 cursor-pointer shadow-lg hover:shadow-amber-900/20 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 text-2xl group-hover:scale-110 transition">
+                                <i class="fa-solid fa-video"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white group-hover:text-amber-400 transition">ভিডিও সার্ভিস</h2>
+                            <p class="text-slate-400 text-sm">
+                                লাইভ অথবা প্রাইভেট ভিডিও কলের মাধ্যমে দ্রুত এবং সাশ্রয়ী সার্ভিস ক্যাটাগরি বেছে নিন।
+                            </p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <p><i class="fa-solid fa-check text-emerald-400 mr-1"></i> ১০ মি. থেকে ১ ঘণ্টার প্যাক</p>
+                                <p><i class="fa-solid fa-check text-emerald-400 mr-1"></i> আজকের স্পেশাল কালেকশন</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-amber-400 font-semibold text-sm">
+                            <span>কালেকশন দেখুন</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <!-- 3. Live Show -->
+                    <div onclick="app.startBooking('liveshow')" class="group relative rounded-2xl bg-slate-900/80 border border-slate-800 p-6 hover:border-indigo-500/50 hover:bg-slate-800/80 transition duration-300 cursor-pointer shadow-lg hover:shadow-indigo-900/20 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 text-2xl group-hover:scale-110 transition">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white group-hover:text-indigo-400 transition">লাইভ শো মেম্বারশিপ</h2>
+                            <p class="text-slate-400 text-sm">
+                                নির্দিষ্ট মেয়াদের মেম্বারশিপ প্যাক সাবস্ক্রাইব করে লাইভ শো সুবিধা উপভোগ করুন।
+                            </p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <p><i class="fa-solid fa-check text-emerald-400 mr-1"></i> ১০ দিন, ১ মাস ও ৩ মাসের প্যাক</p>
+                                <p><i class="fa-solid fa-check text-emerald-400 mr-1"></i> ১০০% অনলাইন পেমেন্ট</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-indigo-400 font-semibold text-sm">
+                            <span>প্যাকেজসমূহ</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Services Section (If Admin adds custom services) -->
+                <div id="custom-services-section" class="hidden space-y-4">
+                    <h3 class="text-xl font-bold text-slate-200 border-l-4 border-rose-500 pl-3">অন্যান্য মেম্বারশিপ ও সার্ভিস</h3>
+                    <div id="custom-services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Dynamic services -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- REAL SERVICE BOOKING WORKFLOW -->
+            <div id="view-real-service" class="view-panel hidden space-y-6">
+                <!-- Navigation Breadcrumb -->
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <button onclick="app.navigateTo('home')" class="hover:text-white"><i class="fa-solid fa-house mr-1"></i>হোম</button>
+                    <span>/</span>
+                    <span class="text-rose-400 font-semibold">রিয়েল সার্ভিস বুকিং</span>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-compass text-rose-500"></i> স্থান ও তারিখ নির্বাচন করুন
+                    </h2>
+
+                    <!-- Filter Options -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">মেন এরিয়া (জেলা/শহর)</label>
+                            <select id="real-main-area" onchange="app.onRealMainAreaChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
+                                <option value="">জেলা নির্বাচন করুন</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">সাব-এরিয়া (সাব-লোকেশন)</label>
+                            <select id="real-sub-area" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
+                                <option value="">প্রথমে জেলা সিলেক্ট করুন</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">তারিখ (পরবর্তী ১০ দিন)</label>
+                            <select id="real-date-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
+                                <!-- Dynamic Dates -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button onclick="app.searchRealProfiles()" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-semibold shadow-lg shadow-rose-900/30 transition">
+                            <i class="fa-solid fa-magnifying-glass mr-2"></i>প্রোফাইল সার্চ করুন
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile Search Results Container -->
+                <div id="real-profiles-results" class="hidden space-y-6">
+                    <h3 class="text-xl font-bold text-slate-200">উপলব্ধ কালেকশন/প্রোফাইলসমূহ</h3>
+                    <div id="real-profiles-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamically Injected Profiles -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIDEO SERVICE WORKFLOW -->
+            <div id="view-video-service" class="view-panel hidden space-y-6">
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <button onclick="app.navigateTo('home')" class="hover:text-white"><i class="fa-solid fa-house mr-1"></i>হোম</button>
+                    <span>/</span>
+                    <span class="text-amber-400 font-semibold">ভিডিও সার্ভিস বুকিং</span>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-amber-500"></i> ভিডিও সার্ভিস ক্যাটাগরি সিলেক্ট করুন
+                    </h2>
+
+                    <!-- Category Selector -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <button onclick="app.selectVideoCategory('medium')" id="v-cat-medium" class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 hover:border-amber-500 text-left transition font-semibold text-slate-200">
+                            <div class="text-amber-400 text-sm">কোড: ০১ - ১০০</div>
+                            <div class="text-lg font-bold text-white">মিডিয়াম ক্যাটাগরি</div>
+                        </button>
+                        <button onclick="app.selectVideoCategory('premium')" id="v-cat-premium" class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 hover:border-amber-500 text-left transition font-semibold text-slate-200">
+                            <div class="text-amber-400 text-sm">কোড: ১০১ - ২০০</div>
+                            <div class="text-lg font-bold text-white">প্রিমিয়াম ক্যাটাগরি</div>
+                        </button>
+                        <button onclick="app.selectVideoCategory('new')" id="v-cat-new" class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 hover:border-amber-500 text-left transition font-semibold text-slate-200">
+                            <div class="text-amber-400 text-sm">কোড: ৩০১ - ৩৬২</div>
+                            <div class="text-lg font-bold text-white">নিউ কালেকশন</div>
+                        </button>
+                    </div>
+
+                    <!-- Rates Options Grid for selected category -->
+                    <div id="video-rates-container" class="hidden space-y-4">
+                        <h3 class="text-lg font-bold text-slate-300">সময়সীমা ও সার্ভিস প্যাকেজ বেছে নিন:</h3>
+                        <div id="video-rates-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Injected Video Duration Packages -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Video Models Grid -->
+                <div id="video-models-container" class="hidden space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-slate-200">উপলব্ধ মডেল কালেকশন</h3>
+                        <span id="video-duration-notice" class="text-xs px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30"></span>
+                    </div>
+                    <div id="video-models-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic Profiles for selected duration -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE SHOW WORKFLOW -->
+            <div id="view-liveshow-service" class="view-panel hidden space-y-6">
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <button onclick="app.navigateTo('home')" class="hover:text-white"><i class="fa-solid fa-house mr-1"></i>হোম</button>
+                    <span>/</span>
+                    <span class="text-indigo-400 font-semibold">লাইভ শো প্যাকেজ</span>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-headset text-indigo-500"></i> লাইভ শো মেম্বারশিপ প্যাকেজ
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- 10 Days Package -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 space-y-4 flex flex-col justify-between hover:border-indigo-500 transition shadow-lg">
+                            <div class="space-y-3">
+                                <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-semibold rounded-full">ট্রায়াল প্যাক</span>
+                                <h3 class="text-2xl font-bold text-white">১০ দিন মেয়াদি</h3>
+                                <div class="text-3xl font-extrabold text-indigo-400">৫৫০ <span class="text-sm font-normal text-slate-400">টাকা</span></div>
+                                <ul class="text-sm text-slate-300 space-y-2 pt-2 border-t border-slate-700">
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> ফুল এইচডি লাইভ স্ট্রিমিং</li>
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> ১০ দিন এক্সেস সুবিধা</li>
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> ১০০% প্রসেসিং অনলাইন</li>
+                                </ul>
+                            </div>
+                            <button onclick="app.proceedToPayment({serviceType:'liveshow', title:'লাইভ শো ১০ দিন মেয়াদি', totalRate: 550})" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg transition">
+                                বুকিং করুন
+                            </button>
+                        </div>
+
+                        <!-- 1 Month Package -->
+                        <div class="bg-slate-800/60 border-2 border-indigo-500/80 rounded-2xl p-6 space-y-4 flex flex-col justify-between relative shadow-xl shadow-indigo-950/40">
+                            <div class="absolute -top-3 right-6 bg-gradient-to-r from-indigo-500 to-rose-500 text-white text-[10px] uppercase font-extrabold tracking-wider px-3 py-1 rounded-full shadow">
+                                সবচেয়ে জনপ্রিয়
+                            </div>
+                            <div class="space-y-3">
+                                <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-semibold rounded-full">স্ট্যান্ডার্ড প্যাক</span>
+                                <h3 class="text-2xl font-bold text-white">১ মাস মেয়াদি</h3>
+                                <div class="text-3xl font-extrabold text-indigo-400">১০২০ <span class="text-sm font-normal text-slate-400">টাকা</span></div>
+                                <ul class="text-sm text-slate-300 space-y-2 pt-2 border-t border-slate-700">
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> ফুল এইচডি লাইভ সার্ভিস</li>
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> ৩০ দিন আনলিমিটেড সার্ভিস</li>
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> প্রাইভেট চ্যাট সাপোর্ট</li>
+                                </ul>
+                            </div>
+                            <button onclick="app.proceedToPayment({serviceType:'liveshow', title:'লাইভ শো ১ মাস মেয়াদি', totalRate: 1020})" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-rose-600 hover:opacity-90 text-white font-bold rounded-xl shadow-lg transition">
+                                বুকিং করুন
+                            </button>
+                        </div>
+
+                        <!-- 3 Months Package -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 space-y-4 flex flex-col justify-between hover:border-indigo-500 transition shadow-lg">
+                            <div class="space-y-3">
+                                <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-semibold rounded-full">প্রিমিয়াম প্যাক</span>
+                                <h3 class="text-2xl font-bold text-white">৩ মাস মেয়াদি</h3>
+                                <div class="text-3xl font-extrabold text-indigo-400">১৮৫০ <span class="text-sm font-normal text-slate-400">টাকা</span></div>
+                                <ul class="text-sm text-slate-300 space-y-2 pt-2 border-t border-slate-700">
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> সর্বোচ্চ ভিআইপি সুবিধা</li>
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> ৯০ দিন পূর্ণ এক্সেস</li>
+                                    <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> মেম্বারশিপ ব্যাজসহ ভিআইপি সাপোর্ট</li>
+                                </ul>
+                            </div>
+                            <button onclick="app.proceedToPayment({serviceType:'liveshow', title:'লাইভ শো ৩ মাস মেয়াদি', totalRate: 1850})" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg transition">
+                                বুকিং করুন
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLIENT BOOKING HISTORY & DASHBOARD -->
+            <div id="view-client-history" class="view-panel hidden space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-receipt text-emerald-400"></i> আমার বুকিং হিস্ট্রি
+                    </h2>
+                    <button onclick="app.navigateTo('home')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs hover:bg-slate-700 transition">
+                        <i class="fa-solid fa-plus mr-1"></i> নতুন বুকিং
+                    </button>
+                </div>
+
+                <div id="client-history-list" class="space-y-4">
+                    <!-- Dynamically Injected Bookings -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ADMIN DASHBOARD SECTION (RESTRICTED VIEW) -->
+        <div id="admin-view-container" class="hidden space-y-8">
+            <!-- Admin Header Top Bar -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-amber-500/30 p-6 rounded-2xl shadow-xl">
+                <div>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full text-xs font-semibold">
+                        <i class="fa-solid fa-shield-halved mr-1"></i> এডমিন প্যানেল
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">অ্যাডমিন ম্যানেজমেন্ট কন্ট্রোল</h1>
+                </div>
+                <button onclick="app.logoutAdmin()" class="px-4 py-2 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 rounded-xl text-sm transition">
+                    <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> অ্যাডমিন লগআউট
+                </button>
+            </div>
+
+            <!-- Admin Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-2">
+                <button onclick="app.switchAdminTab('bookings')" id="tab-btn-bookings" class="admin-tab-btn active px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 text-amber-400 border border-slate-700">
+                    <i class="fa-solid fa-list-check mr-1.5"></i> বুকিং রিকোয়েস্ট
+                </button>
+                <button onclick="app.switchAdminTab('collections')" id="tab-btn-collections" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800">
+                    <i class="fa-solid fa-images mr-1.5"></i> কালেকশন প্রোফাইল (৫০০ টি)
+                </button>
+                <button onclick="app.switchAdminTab('users')" id="tab-btn-users" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800">
+                    <i class="fa-solid fa-users mr-1.5"></i> ইউজার ইউজার সিকিউরিটি
+                </button>
+                <button onclick="app.switchAdminTab('settings')" id="tab-btn-settings" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800">
+                    <i class="fa-solid fa-sliders mr-1.5"></i> পেমেন্ট ও সার্ভিস সেটিংস
+                </button>
+            </div>
+
+            <!-- TAB 1: BOOKINGS MANAGEMENT -->
+            <div id="admin-tab-bookings" class="admin-tab-content space-y-4">
+                <h3 class="text-xl font-bold text-slate-200">সকল বুকিং আবেদনসমূহ</h3>
+                <div id="admin-bookings-list" class="space-y-4">
+                    <!-- Dynamic admin booking rows -->
+                </div>
+            </div>
+
+            <!-- TAB 2: COLLECTION PROFILE MANAGEMENT (UP TO 500) -->
+            <div id="admin-tab-collections" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <h3 class="text-xl font-bold text-slate-200">কালেকশন প্রোফাইল তালিকা</h3>
+                    <button onclick="app.openAddCollectionModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-sm shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> নতুন প্রোফাইল যোগ করুন
+                    </button>
+                </div>
+
+                <!-- Collection Filters -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">ক্যাটাগরি অনুযায়ী ফিল্টার</label>
+                        <select id="admin-col-filter-cat" onchange="app.renderAdminCollections()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+                            <option value="all">সকল ক্যাটাগরি</option>
+                            <option value="medium">মিডিয়াম</option>
+                            <option value="premium">প্রিমিয়াম</option>
+                            <option value="new">নিউ স্পেশাল</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">ভিডিওর জন্য উপলব্ধতা</label>
+                        <select id="admin-col-filter-video" onchange="app.renderAdminCollections()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+                            <option value="all">সকল</option>
+                            <option value="video_yes">ভিডিওর জন্য এভেইলেবল</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="admin-collections-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic Collection Cards -->
+                </div>
+            </div>
+
+            <!-- TAB 3: USER MANAGEMENT & PASSWORD RECOVERY -->
+            <div id="admin-tab-users" class="admin-tab-content hidden space-y-4">
+                <h3 class="text-xl font-bold text-slate-200">রেজিস্টার্ড ক্লায়েন্ট তালিকা ও সিকিউরিটি তথ্য</h3>
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-900 text-slate-400 font-semibold uppercase text-xs">
+                            <tr>
+                                <th class="p-4">ক্লায়েন্ট নাম</th>
+                                <th class="p-4">ফোন নাম্বার</th>
+                                <th class="p-4">পিন/পাসওয়ার্ড (৪ ডিজিট)</th>
+                                <th class="p-4">স্ট্যাটাস</th>
+                                <th class="p-4 text-right">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-table" class="divide-y divide-slate-800 bg-slate-900/50">
+                            <!-- Dynamic User rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 4: SETTINGS & SERVICE CONFIG -->
+            <div id="admin-tab-settings" class="admin-tab-content hidden space-y-8">
+                <!-- Payment Numbers Manager -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-lg">
+                    <h3 class="text-xl font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-wallet text-amber-400"></i> ক্যাশিয়ার পেমেন্ট বিকাশ / নগদ / রকেট নাম্বারসমূহ
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">বিকাশ নাম্বার (bKash)</label>
+                            <input type="text" id="setting-bkash" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">নগদ নাম্বার (Nagad)</label>
+                            <input type="text" id="setting-nagad" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">রকেট নাম্বার (Rocket)</label>
+                            <input type="text" id="setting-rocket" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono">
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="app.savePaymentSettings()" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-semibold text-sm transition">
+                            নাম্বারসমূহ আপডেট করুন
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Services Manager (Max 10) -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-lg">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-rose-500"></i> কাস্টম সার্ভিস ও মেম্বারশিপ এড (সর্বোচ্চ ১০ টি)
+                        </h3>
+                        <button onclick="app.openAddServiceModal()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-semibold text-xs transition">
+                            + নতুন সার্ভিস যোগ করুন
+                        </button>
+                    </div>
+                    <div id="admin-services-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Dynamic Services List -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER WITH HELPLINE & INFORMATION -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>© 2026 Dual-Portal Service Booking Management. All Rights Reserved.</p>
+            <p class="text-slate-600">অ্যাডমিন অনুমতি ব্যতিরেক সার্ভিস পরিবর্তন সম্পূর্ণ নিষিদ্ধ।</p>
+        </div>
+    </footer>
+
+    <!-- FLOATING HELPLINE WIDGET (WHATSAPP & TELEGRAM) -->
+    <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end space-y-3">
+        <!-- WhatsApp Floating Button -->
+        <a href="https://wa.me/8801823020470" target="_blank" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-2xl transition hover:scale-105 border border-emerald-400/40">
+            <i class="fa-brands fa-whatsapp text-xl"></i>
+            <span class="font-bold text-xs sm:text-sm">হোয়াটসঅ্যাপ হেল্পলাইন</span>
+        </a>
+        <!-- Telegram Floating Button -->
+        <a href="https://t.me/crsaaadmin03" target="_blank" class="flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-full shadow-2xl transition hover:scale-105 border border-sky-400/40">
+            <i class="fa-brands fa-telegram text-xl"></i>
+            <span class="font-bold text-xs sm:text-sm">টেলিগ্রাম হেল্পলাইন</span>
+        </a>
+    </div>
+
+
+    <!-- ==================== MODALS CONTAINER ==================== -->
+
+    <!-- CLIENT AUTH MODAL (LOGIN / REGISTER) -->
+    <div id="modal-client-auth" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-6 relative shadow-2xl">
+            <button onclick="app.closeModal('modal-client-auth')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <h3 id="auth-modal-title" class="text-2xl font-bold text-white">লগইন করুন</h3>
+                <p id="auth-modal-subtitle" class="text-xs text-slate-400">আপনার মোবাইল নাম্বার এবং ৪ ডিজিটের পিন দিয়ে প্রবেশ করুন</p>
+            </div>
+
+            <!-- Auth Form -->
+            <form id="client-auth-form" onsubmit="app.handleClientAuth(event)" class="space-y-4">
+                <div id="field-name-container" class="hidden">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">আপনার পূর্ণ নাম</label>
+                    <input type="text" id="auth-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500" placeholder="যেমন: রহিম আহমেদ">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">ফোন নাম্বার (১১ ডিজিট)</label>
+                    <input type="tel" id="auth-phone" required pattern="[0-9]{11}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono focus:outline-none focus:border-rose-500" placeholder="017XXXXXXXX">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">৪ ডিজিটের গোপন পাসওয়ার্ড / পিন</label>
+                    <input type="password" id="auth-password" required maxlength="4" pattern="[0-9]{4}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono text-center tracking-widest text-lg focus:outline-none focus:border-rose-500" placeholder="****">
+                </div>
+
+                <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl shadow-lg transition">
+                    লগইন করুন
+                </button>
+            </form>
+
+            <div class="text-center text-xs text-slate-400">
+                <span id="auth-toggle-prompt">একাউন্ট নেই?</span>
+                <button onclick="app.toggleAuthMode()" id="auth-toggle-btn" class="text-rose-400 font-bold hover:underline ml-1">
+                    নতুন একাউন্ট রেজিস্টার করুন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN AUTH MODAL -->
+    <div id="modal-admin-auth" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl w-full max-w-md p-6 space-y-6 relative shadow-2xl">
+            <button onclick="app.closeModal('modal-admin-auth')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl flex items-center justify-center mx-auto text-xl mb-2">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white">অ্যাডমিন প্যানেল ভেরিফিকেশন</h3>
+                <p class="text-xs text-slate-400">সুরক্ষিত অ্যাডমিন ক্রেডেনশিয়াল প্রদান করুন</p>
+            </div>
+
+            <form onsubmit="app.handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">অ্যাডমিন কন্টাক্ট নাম্বার</label>
+                    <input type="text" id="admin-login-phone" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono focus:outline-none focus:border-amber-500" placeholder="019XXXXXXXX">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">অ্যাডমিন পাসওয়ার্ড</label>
+                    <input type="password" id="admin-login-pass" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono focus:outline-none focus:border-amber-500" placeholder="******">
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl shadow-lg transition">
+                    অ্যাডমিন আনলক করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADVANCE PAYMENT MODAL -->
+    <div id="modal-payment" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-6 relative shadow-2xl my-8">
+            <button onclick="app.closeModal('modal-payment')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-semibold">
+                    বুকিং পেমেন্ট ধাপ
+                </span>
+                <h3 class="text-2xl font-bold text-white mt-1" id="pay-modal-title">পেমেন্ট সম্পন্ন করুন</h3>
+                <p class="text-xs text-slate-400" id="pay-modal-subtitle">সার্ভিস বিস্তারিত ও পেমেন্ট বিবরণ</p>
+            </div>
+
+            <!-- Rate Breakdown Box -->
+            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 space-y-2 text-sm">
+                <div class="flex justify-between text-slate-300">
+                    <span>মোট সার্ভিস রেট:</span>
+                    <span id="pay-total-rate" class="font-bold text-white">0 BDT</span>
+                </div>
+                <div class="flex justify-between text-amber-400 font-bold border-t border-slate-700 pt-2">
+                    <span>প্রদেয় এডভান্স ফি:</span>
+                    <span id="pay-advance-rate" class="text-lg">0 BDT</span>
+                </div>
+                <div class="flex justify-between text-xs text-slate-400">
+                    <span>বাকি ক্যাশ ইন হ্যান্ড (হাতে পরিশোধযোগ্য):</span>
+                    <span id="pay-remaining-rate">0 BDT</span>
+                </div>
+            </div>
+
+            <!-- Payment Instructions Alert -->
+            <div class="bg-rose-950/40 border border-rose-500/30 p-3 rounded-xl text-xs text-rose-300 space-y-1">
+                <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> সতর্কতা ও দিকনির্দেশনা:</p>
+                <p>উক্ত নাম্বারে শুধুমাত্র <span class="font-bold underline">সেন্ড মানি</span> অথবা <span class="font-bold underline">ক্যাশ ইন</span> গ্রহণ করা হয়। ঠিক যত টাকা এডভান্স দেখাচ্ছে, ঠিক তত টাকাই সেন্ড মানি/ক্যাশ ইন করুন।</p>
+            </div>
+
+            <!-- Payment Methods List -->
+            <div class="space-y-3">
+                <label class="block text-xs font-semibold text-slate-400">পেমেন্ট নাম্বারসমূহ (কপি করতে পাশের বোতামে চাপুন):</label>
+                
+                <!-- bKash -->
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-pink-600/20 text-pink-400 flex items-center justify-center font-bold text-xs">
+                            bKash
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400">বিকাশ পার্সোনাল</div>
+                            <div id="pay-num-bkash" class="font-mono font-bold text-white text-sm">01847257668</div>
+                        </div>
+                    </div>
+                    <button onclick="app.copyToClipboard('pay-num-bkash')" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-xs text-slate-200 rounded-lg transition">
+                        কপি করুন
+                    </button>
+                </div>
+
+                <!-- Nagad -->
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold text-xs">
+                            Nagad
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400">নগদ পার্সোনাল</div>
+                            <div id="pay-num-nagad" class="font-mono font-bold text-white text-sm">01971355287</div>
+                        </div>
+                    </div>
+                    <button onclick="app.copyToClipboard('pay-num-nagad')" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-xs text-slate-200 rounded-lg transition">
+                        কপি করুন
+                    </button>
+                </div>
+
+                <!-- Rocket -->
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center font-bold text-xs">
+                            Rocket
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400">রকেট পার্সোনাল</div>
+                            <div id="pay-num-rocket" class="font-mono font-bold text-white text-sm">01788311044</div>
+                        </div>
+                    </div>
+                    <button onclick="app.copyToClipboard('pay-num-rocket')" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-xs text-slate-200 rounded-lg transition">
+                        কপি করুন
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Submission Form -->
+            <form onsubmit="app.submitPaymentBooking(event)" class="space-y-4 pt-2 border-t border-slate-800">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">আপনি কোন মাধ্যমে পেমেন্ট করেছেন?</label>
+                    <select id="pay-method-select" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white">
+                        <option value="bKash">বিকাশ (bKash)</option>
+                        <option value="Nagad">নগদ (Nagad)</option>
+                        <option value="Rocket">রকেট (Rocket)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">পেমেন্টের ধরন সিলেক্ট করুন</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="p-3 bg-slate-800 border border-slate-700 rounded-xl flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="pay_type" value="send_money" checked onchange="app.togglePaymentTypeInput('send_money')">
+                            <span class="text-xs font-semibold text-slate-200">সেন্ড মানি</span>
+                        </label>
+                        <label class="p-3 bg-slate-800 border border-slate-700 rounded-xl flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="pay_type" value="cash_in" onchange="app.togglePaymentTypeInput('cash_in')">
+                            <span class="text-xs font-semibold text-slate-200">ক্যাশ ইন</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Input for Send Money (Gallery Screenshot Upload) -->
+                <div id="pay-input-sendmoney" class="space-y-1">
+                    <label class="block text-xs font-semibold text-slate-400">পেমেন্ট স্ক্রিনশট আপলোড করুন (গ্যালারি থেকে)</label>
+                    <input type="file" id="pay-screenshot-file" accept="image/*" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300">
+                </div>
+
+                <!-- Input for Cash In (Last 4 digits) -->
+                <div id="pay-input-cashin" class="space-y-1 hidden">
+                    <label class="block text-xs font-semibold text-slate-400">যে নাম্বার থেকে ক্যাশ ইন করেছেন তার শেষ ৪ ডিজিট</label>
+                    <input type="text" id="pay-last-digits" maxlength="4" placeholder="যেমন: 5287" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono">
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-bold rounded-xl shadow-lg transition">
+                    বুকিং সাবমিট করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- GALLERY MEDIA PREVIEW MODAL -->
+    <div id="modal-gallery" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 space-y-4 relative shadow-2xl">
+            <button onclick="app.closeModal('modal-gallery')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 id="gallery-title" class="text-xl font-bold text-white">গ্যালারি মিডিয়া প্রিভিউ</h3>
+            
+            <div id="gallery-content-area" class="space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar p-2">
+                <!-- Gallery items injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN ADD COLLECTION MODAL -->
+    <div id="modal-add-collection" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 relative shadow-2xl my-8">
+            <button onclick="app.closeModal('modal-add-collection')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-white border-b border-slate-800 pb-2">নতুন কালেকশন প্রোফাইল এড করুন</h3>
+
+            <form onsubmit="app.saveCollectionProfile(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">মডেলের নাম</label>
+                    <input type="text" id="col-input-name" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">কোড নাম্বার (যেমন: 05, 105, 305)</label>
+                    <input type="text" id="col-input-code" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white font-mono text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">ক্যাটাগরি</label>
+                    <select id="col-input-category" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm">
+                        <option value="medium">মিডিয়াম ক্যাটাগরি</option>
+                        <option value="premium">প্রিমিয়াম ক্যাটাগরি</option>
+                        <option value="new">নিউ স্পেশাল কালেকশন</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">মডেলের কন্টাক্ট ফোন নাম্বার (বুকিং কনফার্মে দেখাবে)</label>
+                    <input type="tel" id="col-input-phone" required placeholder="018XXXXXXXX" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white font-mono text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">ছবি আপলোড (গ্যালারি থেকে সর্বোচ্চ ৫ টি)</label>
+                    <input type="file" id="col-input-photos" accept="image/*" multiple max="5" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">কাস্টম/ম্যানুয়াল রেট (ঐচ্ছিক)</label>
+                    <input type="number" id="col-input-customrate" placeholder="ডিফল্ট রেট ব্যবহার না করতে চাইলে লিখুন" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition text-sm">
+                    প্রোফাইল সেভ করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN ADD CUSTOM SERVICE MODAL -->
+    <div id="modal-add-service" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
+            <button onclick="app.closeModal('modal-add-service')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-white border-b border-slate-800 pb-2">নতুন কাস্টম সার্ভিস এড করুন</h3>
+
+            <form onsubmit="app.saveCustomService(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">সার্ভিস বা প্যাকেজের নাম</label>
+                    <input type="text" id="srv-input-title" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">মূল্য (রেট BDT)</label>
+                    <input type="number" id="srv-input-rate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">সংক্ষিপ্ত বিবরণ</label>
+                    <textarea id="srv-input-desc" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl shadow-lg transition text-sm">
+                    সার্ভিস যোগ করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT APPLICATION CORE LOGIC -->
+    <script>
+        /**
+         * APPLICATION CORE STATE & DATA CONTROLLER
+         */
+        const app = {
+            // State
+            currentUser: JSON.parse(localStorage.getItem('app_client_user')) || null,
+            isAdminAuthenticated: false,
+            activeView: 'home',
+            
+            // System Settings
+            paymentNumbers: JSON.parse(localStorage.getItem('app_payment_numbers')) || {
+                bkash: '01847257668',
+                nagad: '01971355287',
+                rocket: '01788311044'
+            },
+
+            // Pre-seeded Rates Architecture
+            rates: {
+                real: {
+                    medium: { '1h': 2000, '2h': 3200, '3h': 4500, 'night': 6000 },
+                    premium: { '1h': 3000, '2h': 4200, '3h': 5500, 'night': 8000 },
+                    new: { '1h': 2500, '2h': 3800, '3h': 5000, 'night': 7000 }
+                },
+                video: {
+                    medium: [
+                        { duration: '10 Mins', details: 'Face + Fingering', rate: 750 },
+                        { duration: '20 Mins', details: 'Fingering + Mal Out', rate: 1020 },
+                        { duration: '30 Mins', details: 'Fingering + Mal Out + Nude Dance', rate: 1530 },
+                        { duration: '60 Mins', details: 'Fingering + Mal Out + Nude Dance + Bath Service', rate: 2040 }
+                    ],
+                    premium: [
+                        { duration: '10 Mins', details: 'Face + Fingering', rate: 915 },
+                        { duration: '20 Mins', details: 'Fingering + Mal Out', rate: 1230 },
+                        { duration: '30 Mins', details: 'Fingering + Mal Out + Nude Dance', rate: 1750 },
+                        { duration: '60 Mins', details: 'Fingering + Mal Out + Nude Dance + Bath Service', rate: 2550 }
+                    ],
+                    new: [
+                        { duration: '10 Mins', details: 'Face + Fingering', rate: 850 },
+                        { duration: '20 Mins', details: 'Fingering + Mal Out', rate: 1125 },
+                        { duration: '30 Mins', details: 'Fingering + Mal Out + Nude Dance', rate: 1630 },
+                        { duration: '60 Mins', details: 'Fingering + Mal Out + Nude Dance + Bath Service', rate: 2250 }
+                    ]
+                }
+            },
+
+            // Pre-seeded Hierarchy Locations
+            locations: [
+                {
+                    main: 'ঢাকা',
+                    subs: [
+                        { name: 'উত্তরা - সেক্টর ৩', type: 'Flat' },
+                        { name: 'উত্তরা - সেক্টর ৭', type: 'Hotel' },
+                        { name: 'উত্তরা - সেক্টর ১২', type: 'Hotel' },
+                        { name: 'মিরপুর - সাড়ে ১১ ইস্টার্ন হাউজিং ডি ব্লক', type: 'Flat' },
+                        { name: 'মিরপুর - ১২ বাস স্ট্যান্ড', type: 'Hotel' },
+                        { name: 'ফার্মগেট - পান্থপথ', type: 'Flat' },
+                        { name: 'ফার্মগেট - তেজতুরি বাজার / তেজকুনিপাড়া', type: 'Hotel' },
+                        { name: 'ধানমণ্ডি - ১০R/A', type: 'Flat' },
+                        { name: 'গুলশান - শাহজাদপুর', type: 'Hotel' },
+                        { name: 'বনানী - সি ব্লক', type: 'Flat' }
+                    ]
+                },
+                {
+                    main: 'চট্টগ্রাম',
+                    subs: [
+                        { name: 'ফেনী: মহিপাল', type: 'Hotel' },
+                        { name: 'সীতাকুণ্ড: কলেজ রোড', type: 'Flat & Hotel' },
+                        { name: 'হাটহাজারী', type: 'Flat & Hotel' },
+                        { name: 'কোতোয়ালি', type: 'Hotel' },
+                        { name: 'জি ই সি', type: 'Flat' },
+                        { name: 'আগ্রাবাদ', type: 'Flat & Hotel' }
+                    ]
+                },
+                { main: 'কক্সবাজার', subs: [{ name: 'হোটেল জোন', type: 'Hotel' }] },
+                { main: 'রাজশাহী', subs: [{ name: 'বিন্দুরমোড়', type: 'Flat' }, { name: 'সাহেব বাজার', type: 'Flat & Hotel' }] },
+                { main: 'খুলনা', subs: [{ name: 'শীব বাড়ি', type: 'Flat & Hotel' }] },
+                { main: 'বরিশাল', subs: [{ name: 'সদর রোড', type: 'Hotel' }] },
+                { main: 'কুমিল্লা', subs: [{ name: 'কান্দিরপাড়', type: 'Flat' }] },
+                { main: 'হবিগঞ্জ', subs: [{ name: 'নতুন ব্রিজ', type: 'Hotel' }, { name: 'শায়েস্তানগর', type: 'Flat' }, { name: 'কালীবাড়ি', type: 'Hotel' }, { name: 'বেবি স্ট্যান্ড', type: 'Flat' }] },
+                { main: 'সিলেট', subs: [{ name: 'বন্দর বাজার', type: 'Hotel' }, { name: 'জিন্দাবাজার', type: 'Flat' }, { name: 'মদিনা মার্কেট', type: 'Flat & Hotel' }, { name: 'দরগা গেইট', type: 'Hotel' }, { name: 'আম্বরখানা', type: 'Flat' }] }
+            ],
+
+            // Seeded Collection Profiles
+            collections: JSON.parse(localStorage.getItem('app_collections')) || [
+                {
+                    id: 'col_1',
+                    code: '05',
+                    name: 'নাসরিন সুলতানা',
+                    category: 'medium',
+                    phone: '01811223344',
+                    isAvailableReal: true,
+                    isAvailableVideoToday: true,
+                    photos: ['https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'],
+                    customRate: null
+                },
+                {
+                    id: 'col_2',
+                    code: '112',
+                    name: 'জেরিন রহমান',
+                    category: 'premium',
+                    phone: '01722334455',
+                    isAvailableReal: true,
+                    isAvailableVideoToday: false,
+                    photos: ['https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80'],
+                    customRate: null
+                },
+                {
+                    id: 'col_3',
+                    code: '308',
+                    name: 'সামিয়া চৌধুরী',
+                    category: 'new',
+                    phone: '01933445566',
+                    isAvailableReal: true,
+                    isAvailableVideoToday: true,
+                    photos: ['https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80'],
+                    customRate: null
+                }
+            ],
+
+            // Client Users
+            users: JSON.parse(localStorage.getItem('app_users')) || [],
+
+            // Bookings Array
+            bookings: JSON.parse(localStorage.getItem('app_bookings')) || [],
+
+            // Custom Admin Services (Max 10)
+            customServices: JSON.parse(localStorage.getItem('app_custom_services')) || [],
+
+            // Temporary State during payment booking
+            pendingBooking: null,
+
+            // INIT
+            init() {
+                this.renderNavUserArea();
+                this.populateRealMainAreas();
+                this.populateRealDates();
+                this.renderCustomServices();
+                this.updatePaymentNumberDisplays();
+            },
+
+            saveData() {
+                localStorage.setItem('app_collections', JSON.stringify(this.collections));
+                localStorage.setItem('app_users', JSON.stringify(this.users));
+                localStorage.setItem('app_bookings', JSON.stringify(this.bookings));
+                localStorage.setItem('app_custom_services', JSON.stringify(this.customServices));
+                localStorage.setItem('app_payment_numbers', JSON.stringify(this.paymentNumbers));
+            },
+
+            // NAVIGATION
+            navigateTo(viewId) {
+                document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
+                document.getElementById('admin-view-container').classList.add('hidden');
+                document.getElementById('client-view-container').classList.remove('hidden');
+
+                const target = document.getElementById(`view-${viewId}`);
+                if (target) {
+                    target.classList.remove('hidden');
+                    this.activeView = viewId;
+                }
+
+                if (viewId === 'client-history') {
+                    this.renderClientHistory();
+                }
+            },
+
+            renderNavUserArea() {
+                const container = document.getElementById('nav-user-area');
+                if (this.currentUser) {
+                    container.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <button onclick="app.navigateTo('client-history')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/20 text-xs sm:text-sm font-semibold hover:bg-rose-500/20 transition">
+                                <i class="fa-solid fa-user mr-1"></i> ${this.currentUser.name}
+                            </button>
+                            <button onclick="app.logoutClient()" class="text-slate-400 hover:text-rose-400 text-xs px-2 py-1">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <button onclick="app.openClientAuthModal()" class="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs sm:text-sm shadow transition">
+                            লগইন / রেজিস্টার
+                        </button>
+                    `;
+                }
+            },
+
+            // CLIENT AUTHENTICATION
+            authMode: 'login', // 'login' or 'register'
+            openClientAuthModal() {
+                this.authMode = 'login';
+                this.updateAuthModalUI();
+                document.getElementById('modal-client-auth').classList.remove('hidden');
+            },
+
+            toggleAuthMode() {
+                this.authMode = (this.authMode === 'login') ? 'register' : 'login';
+                this.updateAuthModalUI();
+            },
+
+            updateAuthModalUI() {
+                const nameField = document.getElementById('field-name-container');
+                const title = document.getElementById('auth-modal-title');
+                const btn = document.getElementById('auth-submit-btn');
+                const prompt = document.getElementById('auth-toggle-prompt');
+                const toggleBtn = document.getElementById('auth-toggle-btn');
+
+                if (this.authMode === 'register') {
+                    nameField.classList.remove('hidden');
+                    title.innerText = 'নতুন একাউন্ট রেজিস্টার';
+                    btn.innerText = 'রেজিস্ট্রেশন করুন';
+                    prompt.innerText = 'ইতিমধ্যে একাউন্ট আছে?';
+                    toggleBtn.innerText = 'লগইন করুন';
+                } else {
+                    nameField.classList.add('hidden');
+                    title.innerText = 'লগইন করুন';
+                    btn.innerText = 'লগইন করুন';
+                    prompt.innerText = 'একাউন্ট নেই?';
+                    toggleBtn.innerText = 'নতুন একাউন্ট রেজিস্টার করুন';
+                }
+            },
+
+            handleClientAuth(e) {
+                e.preventDefault();
+                const phone = document.getElementById('auth-phone').value.trim();
+                const password = document.getElementById('auth-password').value.trim();
+
+                if (this.authMode === 'register') {
+                    const name = document.getElementById('auth-name').value.trim();
+                    if (!name) return alert('অনুগ্রহ করে নাম দিন');
+
+                    const existing = this.users.find(u => u.phone === phone);
+                    if (existing) {
+                        return alert('এই ফোন নাম্বার দিয়ে ইতিমধ্যে একাউন্ট রয়েছে। লগইন করুন।');
+                    }
+
+                    const newUser = { id: 'usr_' + Date.now(), name, phone, password, isBanned: false };
+                    this.users.push(newUser);
+                    this.currentUser = newUser;
+                    this.saveData();
+                    localStorage.setItem('app_client_user', JSON.stringify(newUser));
+                    alert('রেজিস্ট্রেশন সফল হয়েছে!');
+                } else {
+                    const user = this.users.find(u => u.phone === phone && u.password === password);
+                    if (!user) {
+                        return alert('ভুল ফোন নাম্বার অথবা গোপন পিন। পুনরায় চেষ্টা করুন।');
+                    }
+                    if (user.isBanned) {
+                        return alert('আপনার একাউন্টটি অ্যাডমিন প্যানেল থেকে সাময়িক স্থগিত/ব্যান করা হয়েছে। হেল্পলাইনে যোগাযোগ করুন।');
+                    }
+                    this.currentUser = user;
+                    localStorage.setItem('app_client_user', JSON.stringify(user));
+                    alert('সফলভাবে লগইন হয়েছে!');
+                }
+
+                this.closeModal('modal-client-auth');
+                this.renderNavUserArea();
+            },
+
+            logoutClient() {
+                this.currentUser = null;
+                localStorage.removeItem('app_client_user');
+                this.renderNavUserArea();
+                this.navigateTo('home');
+            },
+
+            // ADMIN AUTHENTICATION
+            openAdminAuthModal() {
+                if (this.isAdminAuthenticated) {
+                    this.showAdminDashboard();
+                } else {
+                    document.getElementById('modal-admin-auth').classList.remove('hidden');
+                }
+            },
+
+            handleAdminLogin(e) {
+                e.preventDefault();
+                const phone = document.getElementById('admin-login-phone').value.trim();
+                const pass = document.getElementById('admin-login-pass').value.trim();
+
+                if (phone === '01971355287' && pass === '181296') {
+                    this.isAdminAuthenticated = true;
+                    this.closeModal('modal-admin-auth');
+                    this.showAdminDashboard();
+                } else {
+                    alert('ভুল অ্যাডমিন ক্রেডেনশিয়াল!');
+                }
+            },
+
+            showAdminDashboard() {
+                document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
+                document.getElementById('client-view-container').classList.add('hidden');
+                document.getElementById('admin-view-container').classList.remove('hidden');
+                
+                // Initialize Admin Tabs
+                this.switchAdminTab('bookings');
+                this.renderAdminUsers();
+                this.renderAdminCollections();
+                this.renderAdminServicesList();
+            },
+
+            logoutAdmin() {
+                this.isAdminAuthenticated = false;
+                document.getElementById('admin-view-container').classList.add('hidden');
+                this.navigateTo('home');
+            },
+
+            // REAL SERVICE LOGIC
+            populateRealMainAreas() {
+                const select = document.getElementById('real-main-area');
+                select.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>';
+                this.locations.forEach(loc => {
+                    select.innerHTML += `<option value="${loc.main}">${loc.main}</option>`;
+                });
+            },
+
+            onRealMainAreaChange() {
+                const main = document.getElementById('real-main-area').value;
+                const subSelect = document.getElementById('real-sub-area');
+                subSelect.innerHTML = '<option value="">সাব-এরিয়া সিলেক্ট করুন</option>';
+
+                const found = this.locations.find(l => l.main === main);
+                if (found) {
+                    found.subs.forEach(s => {
+                        subSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.type})</option>`;
+                    });
+                }
+            },
+
+            populateRealDates() {
+                const select = document.getElementById('real-date-select');
+                select.innerHTML = '';
+                const today = new Date();
+                for (let i = 0; i < 10; i++) {
+                    const d = new Date(today);
+                    d.setDate(today.getDate() + i);
+                    const dateStr = d.toISOString().split('T')[0];
+                    select.innerHTML += `<option value="${dateStr}">${dateStr} ${i===0?'(আজ)':''}</option>`;
+                }
+            },
+
+            searchRealProfiles() {
+                const mainArea = document.getElementById('real-main-area').value;
+                const subArea = document.getElementById('real-sub-area').value;
+
+                if (!mainArea || !subArea) {
+                    return alert('অনুগ্রহ করে জেলা এবং সাব-এরিয়া উভয়ই সিলেক্ট করুন');
+                }
+
+                const resultsDiv = document.getElementById('real-profiles-results');
+                const grid = document.getElementById('real-profiles-grid');
+                resultsDiv.classList.remove('hidden');
+                grid.innerHTML = '';
+
+                // Filter Available Profiles
+                const available = this.collections.filter(c => c.isAvailableReal);
+
+                if (available.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-900 border border-slate-800 rounded-2xl">এই মুহূর্তে কোনো কালেকশন পাওয়া যায়নি।</div>`;
+                    return;
+                }
+
+                available.forEach(col => {
+                    const ratesObj = this.rates.real[col.category] || this.rates.real.medium;
+                    grid.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-48 bg-slate-800 overflow-hidden">
+                                    <img src="${col.photos[0] || 'https://placehold.co/400x300/1e293b/ffffff?text=Collection'}" class="w-full h-full object-cover">
+                                    <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 text-amber-300 font-mono text-xs rounded-full border border-amber-500/30">
+                                        কোড: ${col.code}
+                                    </span>
+                                </div>
+                                <div class="p-5 space-y-3">
+                                    <h4 class="text-xl font-bold text-white">${col.name}</h4>
+                                    <div class="text-xs text-slate-400 space-y-1 bg-slate-800/50 p-3 rounded-xl">
+                                        <div class="flex justify-between"><span>১ ঘণ্টা:</span> <span class="font-bold text-white">${ratesObj['1h']} BDT</span></div>
+                                        <div class="flex justify-between"><span>২ ঘণ্টা:</span> <span class="font-bold text-white">${ratesObj['2h']} BDT</span></div>
+                                        <div class="flex justify-between"><span>নাইট প্যাক:</span> <span class="font-bold text-rose-400">${ratesObj['night']} BDT</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 pt-0">
+                                <button onclick="app.selectRealProfileBooking('${col.id}')" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition text-sm">
+                                    বুকিং ও পেমেন্টে যান
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            selectRealProfileBooking(colId) {
+                const col = this.collections.find(c => c.id === colId);
+                const ratesObj = this.rates.real[col.category] || this.rates.real.medium;
+                const mainArea = document.getElementById('real-main-area').value;
+                const subArea = document.getElementById('real-sub-area').value;
+                const date = document.getElementById('real-date-select').value;
+
+                // Prompt Choice for duration
+                const duration = prompt(`সিলেক্ট করুন সময়সীমা:\n1. 1 Hour (${ratesObj['1h']} BDT)\n2. 2 Hours (${ratesObj['2h']} BDT)\n3. 3 Hours (${ratesObj['3h']} BDT)\n4. Night (${ratesObj['night']} BDT)\n\nসংখ্যা লিখুন (1-4):`, '1');
+                
+                let selectedDurationStr = '1 Hour';
+                let totalRate = ratesObj['1h'];
+
+                if (duration === '2') { selectedDurationStr = '2 Hours'; totalRate = ratesObj['2h']; }
+                else if (duration === '3') { selectedDurationStr = '3 Hours'; totalRate = ratesObj['3h']; }
+                else if (duration === '4') { selectedDurationStr = 'Night Pack'; totalRate = ratesObj['night']; }
+
+                this.proceedToPayment({
+                    serviceType: 'real',
+                    title: `রিয়েল সার্ভিস - ${col.name} (কোড: ${col.code})`,
+                    collectionId: col.id,
+                    collectionName: col.name,
+                    collectionCode: col.code,
+                    modelPhone: col.phone,
+                    location: `${mainArea} - ${subArea}`,
+                    date: date,
+                    duration: selectedDurationStr,
+                    totalRate: col.customRate || totalRate
+                });
+            },
+
+            // VIDEO SERVICE LOGIC
+            selectedVideoCat: null,
+            selectVideoCategory(catKey) {
+                this.selectedVideoCat = catKey;
+                document.querySelectorAll('#view-video-service button').forEach(b => b.classList.remove('border-amber-500', 'bg-amber-500/10'));
+                document.getElementById(`v-cat-${catKey}`).classList.add('border-amber-500', 'bg-amber-500/10');
+
+                const ratesGrid = document.getElementById('video-rates-grid');
+                ratesGrid.innerHTML = '';
+                document.getElementById('video-rates-container').classList.remove('hidden');
+
+                const pkgs = this.rates.video[catKey];
+                pkgs.forEach((pkg, index) => {
+                    ratesGrid.innerHTML += `
+                        <div onclick="app.selectVideoPackage(${index})" class="p-4 bg-slate-800 border border-slate-700 hover:border-amber-500 rounded-xl cursor-pointer space-y-2 transition">
+                            <div class="text-xs text-amber-400 font-bold">${pkg.duration}</div>
+                            <div class="text-sm font-bold text-white">${pkg.details}</div>
+                            <div class="text-lg font-extrabold text-amber-400">${pkg.rate} BDT</div>
+                        </div>
+                    `;
+                });
+            },
+
+            selectVideoPackage(pkgIndex) {
+                const pkg = this.rates.video[this.selectedVideoCat][pkgIndex];
+                const isTenMins = pkg.duration.includes('10');
+
+                // Filter available models
+                let availableModels = [];
+                if (isTenMins) {
+                    availableModels = this.collections; // Any collection for 10 mins
+                } else {
+                    availableModels = this.collections.filter(c => c.isAvailableVideoToday); // Admin flagged today
+                }
+
+                const modelsContainer = document.getElementById('video-models-container');
+                const modelsGrid = document.getElementById('video-models-grid');
+                const notice = document.getElementById('video-duration-notice');
+
+                modelsContainer.classList.remove('hidden');
+                notice.innerText = isTenMins ? 'সকল কালেকশন অ্যাভেইলেবল' : 'আজকের বিশেষ এভেইলেবল মডেল';
+                modelsGrid.innerHTML = '';
+
+                if (availableModels.length === 0) {
+                    modelsGrid.innerHTML = `<div class="col-span-full p-6 text-center text-slate-400 bg-slate-900 border border-slate-800 rounded-xl">কোনো মডেল উপলব্ধ নেই।</div>`;
+                    return;
+                }
+
+                availableModels.forEach(col => {
+                    modelsGrid.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 space-y-3 flex flex-col justify-between shadow-lg">
+                            <div class="flex gap-4">
+                                <img src="${col.photos[0] || 'https://placehold.co/100x100/1e293b/ffffff?text=Model'}" class="w-16 h-16 rounded-xl object-cover">
+                                <div>
+                                    <h4 class="font-bold text-white">${col.name}</h4>
+                                    <div class="text-xs text-amber-400">কোড: ${col.code}</div>
+                                    <div class="text-xs text-slate-400">${pkg.duration} - ${pkg.rate} BDT</div>
+                                </div>
+                            </div>
+                            <button onclick="app.proceedToPayment({
+                                serviceType: 'video',
+                                title: 'ভিডিও সার্ভিস - ${col.name} (${pkg.duration})',
+                                collectionId: '${col.id}',
+                                collectionName: '${col.name}',
+                                duration: '${pkg.duration}',
+                                totalRate: ${pkg.rate}
+                            })" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs transition">
+                                পেমেন্ট কনফার্ম করুন
+                            </button>
+                        </div>
+                    `;
+                });
+            },
+
+            // PROCEED TO PAYMENT & CALCULATION RULES
+            proceedToPayment(bookingData) {
+                if (!this.currentUser) {
+                    alert('পেমেন্ট ও বুকিং সম্পন্ন করার জন্য প্রথমে লগইন করুন।');
+                    this.openClientAuthModal();
+                    return;
+                }
+
+                const total = bookingData.totalRate;
+                let advance = total;
+                let handcash = 0;
+
+                // Rule-based Advance Payment Calculation
+                if (bookingData.serviceType === 'real') {
+                    if (total === 2000) {
+                        advance = 1000; // 50%
+                        handcash = 1000;
+                    } else if (total > 2000) {
+                        advance = 1230; // Fixed Advance
+                        handcash = total - 1230;
+                    }
+                }
+
+                bookingData.advanceRate = advance;
+                bookingData.handcashRate = handcash;
+                this.pendingBooking = bookingData;
+
+                // UI Modal Updates
+                document.getElementById('pay-modal-title').innerText = bookingData.title;
+                document.getElementById('pay-total-rate').innerText = `${total} BDT`;
+                document.getElementById('pay-advance-rate').innerText = `${advance} BDT`;
+                document.getElementById('pay-remaining-rate').innerText = `${handcash} BDT (হ্যান্ড ক্যাশ)`;
+
+                document.getElementById('modal-payment').classList.remove('hidden');
+            },
+
+            togglePaymentTypeInput(type) {
+                if (type === 'send_money') {
+                    document.getElementById('pay-input-sendmoney').classList.remove('hidden');
+                    document.getElementById('pay-input-cashin').classList.add('hidden');
+                } else {
+                    document.getElementById('pay-input-sendmoney').classList.add('hidden');
+                    document.getElementById('pay-input-cashin').classList.remove('hidden');
+                }
+            },
+
+            submitPaymentBooking(e) {
+                e.preventDefault();
+                const payMethod = document.getElementById('pay-method-select').value;
+                const payType = document.querySelector('input[name="pay_type"]:checked').value;
+                let proof = '';
+
+                if (payType === 'send_money') {
+                    const fileInput = document.getElementById('pay-screenshot-file');
+                    proof = fileInput.files[0] ? fileInput.files[0].name : 'Screenshot_Uploaded.png';
+                } else {
+                    const digits = document.getElementById('pay-last-digits').value.trim();
+                    if (!digits || digits.length !== 4) return alert('অনুগ্রহ করে শেষ ৪ ডিজিট সঠিকভাবে লিখুন।');
+                    proof = `লাস্ট ৪ ডিজিট: ${digits}`;
+                }
+
+                const fullBooking = {
+                    id: 'bk_' + Date.now(),
+                    userId: this.currentUser.id,
+                    userName: this.currentUser.name,
+                    userPhone: this.currentUser.phone,
+                    serviceType: this.pendingBooking.serviceType,
+                    title: this.pendingBooking.title,
+                    location: this.pendingBooking.location || 'N/A',
+                    date: this.pendingBooking.date || new Date().toISOString().split('T')[0],
+                    duration: this.pendingBooking.duration || 'N/A',
+                    totalRate: this.pendingBooking.totalRate,
+                    advanceRate: this.pendingBooking.advanceRate,
+                    handcashRate: this.pendingBooking.handcashRate,
+                    modelPhone: this.pendingBooking.modelPhone || 'N/A',
+                    paymentMethod: payMethod,
+                    paymentType: payType,
+                    proof: proof,
+                    status: 'pending', // 'pending', 'approved', 'rejected'
+                    timestamp: new Date().toLocaleString('bn-BD')
+                };
+
+                this.bookings.push(fullBooking);
+                this.saveData();
+
+                this.closeModal('modal-payment');
+                alert('পেমেন্ট গ্রহণ হয়েছে, কনফার্মেশনের জন্য অপেক্ষা করুন। অ্যাডমিন প্যানেল থেকে কিছু সময়ের মধ্যে আপনাকে কনফার্মেশন করা হবে।');
+                this.navigateTo('client-history');
+            },
+
+            // CLIENT HISTORY RENDER
+            renderClientHistory() {
+                const list = document.getElementById('client-history-list');
+                list.innerHTML = '';
+
+                if (!this.currentUser) return;
+                const myBookings = this.bookings.filter(b => b.userId === this.currentUser.id);
+
+                if (myBookings.length === 0) {
+                    list.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-900 border border-slate-800 rounded-2xl">আপনার কোনো বুকিং রেকর্ড পাওয়া যায়নি।</div>`;
+                    return;
+                }
+
+                myBookings.forEach(b => {
+                    let statusBadge = `<span class="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs">অপেক্ষমান (Pending)</span>`;
+                    let contactBox = '';
+
+                    if (b.status === 'approved') {
+                        statusBadge = `<span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs">কনফার্মড (Approved)</span>`;
+                        if (b.serviceType === 'real') {
+                            contactBox = `
+                                <div class="mt-4 p-4 bg-emerald-950/40 border border-emerald-500/30 rounded-xl space-y-1 text-sm text-emerald-200">
+                                    <p class="font-bold"><i class="fa-solid fa-phone text-emerald-400 mr-2"></i>মডেল/মেয়ের কন্টাক্ট নাম্বার: <span class="font-mono text-white">${b.modelPhone}</span></p>
+                                    <p class="text-xs text-slate-300">মেয়ের কন্টাক্টে যোগাযোগ করে কে কাকে কোথায় কখন রিসিভ করবেন বিস্তারিত আলাপ করে নিবেন।</p>
+                                    <p class="text-[11px] text-rose-400 mt-2">বুকিং ক্যানসেল করতে হেল্পলাইনে যোগাযোগ করুন।</p>
+                                </div>
+                            `;
+                        }
+                    } else if (b.status === 'rejected') {
+                        statusBadge = `<span class="px-3 py-1 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full text-xs">বাতিলকৃত (Rejected)</span>`;
+                    }
+
+                    list.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-xl">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">${b.title}</h4>
+                                    <div class="text-xs text-slate-400">তারিখ: ${b.date} | আইডি: ${b.id}</div>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-300 bg-slate-800/40 p-3 rounded-xl">
+                                <div><span class="text-slate-500 block">মোট ফি:</span> ${b.totalRate} BDT</div>
+                                <div><span class="text-slate-500 block">এডভান্স জমা:</span> ${b.advanceRate} BDT</div>
+                                <div><span class="text-slate-500 block">পেমেন্ট মেথড:</span> ${b.paymentMethod} (${b.proof})</div>
+                                <div><span class="text-slate-500 block">লোকেশন:</span> ${b.location}</div>
+                            </div>
+                            ${contactBox}
+                        </div>
+                    `;
+                });
+            },
+
+            // ADMIN MANAGEMENT LOGIC
+            switchAdminTab(tabName) {
+                document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('bg-slate-800', 'text-amber-400'));
+
+                document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
+                document.getElementById(`tab-btn-${tabName}`).classList.add('bg-slate-800', 'text-amber-400');
+
+                if (tabName === 'bookings') this.renderAdminBookings();
+                if (tabName === 'collections') this.renderAdminCollections();
+                if (tabName === 'users') this.renderAdminUsers();
+            },
+
+            renderAdminBookings() {
+                const container = document.getElementById('admin-bookings-list');
+                container.innerHTML = '';
+
+                if (this.bookings.length === 0) {
+                    container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-900 rounded-2xl">কোনো বুকিং রিকোয়েস্ট জমা হয়নি।</div>`;
+                    return;
+                }
+
+                this.bookings.slice().reverse().forEach(b => {
+                    container.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-lg">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <span class="text-xs font-mono text-amber-400">${b.id}</span>
+                                    <h4 class="text-lg font-bold text-white">${b.title}</h4>
+                                    <div class="text-xs text-slate-400">ক্লায়েন্ট: ${b.userName} (${b.userPhone})</div>
+                                </div>
+                                <span class="text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-semibold uppercase">${b.status}</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-slate-800/60 p-3 rounded-xl text-slate-300">
+                                <div><span class="text-slate-500 block">এডভান্স পেট:</span> ${b.advanceRate} BDT</div>
+                                <div><span class="text-slate-500 block">পেমেন্ট মেথড:</span> ${b.paymentMethod}</div>
+                                <div><span class="text-slate-500 block">প্রুফ/আইডি:</span> ${b.proof}</div>
+                                <div><span class="text-slate-500 block">সময়:</span> ${b.timestamp}</div>
+                            </div>
+
+                            <div class="flex gap-3 justify-end pt-2 border-t border-slate-800">
+                                ${b.status === 'pending' ? `
+                                    <button onclick="app.updateBookingStatus('${b.id}', 'approved')" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs transition">
+                                        অনুমোদন করুন (Approve)
+                                    </button>
+                                ` : ''}
+                                <button onclick="app.deleteBooking('${b.id}')" class="px-4 py-1.5 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white font-bold rounded-lg text-xs transition">
+                                    বাতিল ও ডিলিট (Delete Fake)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            updateBookingStatus(id, newStatus) {
+                const b = this.bookings.find(x => x.id === id);
+                if (b) {
+                    b.status = newStatus;
+                    this.saveData();
+                    this.renderAdminBookings();
+                }
+            },
+
+            deleteBooking(id) {
+                if (confirm('আপনি কি নিশ্চিত যে এই ফেক বা ভুয়া বুকিংটি ডিলিট করতে চান? এটি ক্লায়েন্ট একাউন্ট থেকেও মুছে যাবে।')) {
+                    this.bookings = this.bookings.filter(b => b.id !== id);
+                    this.saveData();
+                    this.renderAdminBookings();
+                }
+            },
+
+            // ADMIN COLLECTIONS
+            renderAdminCollections() {
+                const grid = document.getElementById('admin-collections-grid');
+                grid.innerHTML = '';
+
+                this.collections.forEach(col => {
+                    grid.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3 shadow-md flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-mono text-xs px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded border border-amber-500/30">কোড: ${col.code}</span>
+                                    <span class="text-xs text-slate-400 capitalize">${col.category}</span>
+                                </div>
+                                <h4 class="font-bold text-white text-lg">${col.name}</h4>
+                                <div class="text-xs text-slate-400">কন্টাক্ট: ${col.phone}</div>
+                            </div>
+
+                            <div class="space-y-2 pt-2 border-t border-slate-800">
+                                <!-- Single Click Toggle -->
+                                <button onclick="app.toggleCollectionAvailability('${col.id}', 'isAvailableReal')" class="w-full py-1.5 rounded-lg text-xs font-bold transition ${col.isAvailableReal ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-500'}">
+                                    রিয়েল সার্ভিস: ${col.isAvailableReal ? 'এভেইলেবল (ON)' : 'আনএভেইলেবল (OFF)'}
+                                </button>
+                                <button onclick="app.toggleCollectionAvailability('${col.id}', 'isAvailableVideoToday')" class="w-full py-1.5 rounded-lg text-xs font-bold transition ${col.isAvailableVideoToday ? 'bg-amber-600/20 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-500'}">
+                                    আজকের ভিডিও: ${col.isAvailableVideoToday ? 'এভেইলেবল (ON)' : 'আনএভেইলেবল (OFF)'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            toggleCollectionAvailability(id, key) {
+                const col = this.collections.find(c => c.id === id);
+                if (col) {
+                    col[key] = !col[key];
+                    this.saveData();
+                    this.renderAdminCollections();
+                }
+            },
+
+            openAddCollectionModal() {
+                if (this.collections.length >= 500) {
+                    return alert('সর্বোচ্চ ৫০০ টি কালেকশন সম্পূর্ণ হয়েছে।');
+                }
+                document.getElementById('modal-add-collection').classList.remove('hidden');
+            },
+
+            saveCollectionProfile(e) {
+                e.preventDefault();
+                const name = document.getElementById('col-input-name').value;
+                const code = document.getElementById('col-input-code').value;
+                const category = document.getElementById('col-input-category').value;
+                const phone = document.getElementById('col-input-phone').value;
+                const customRate = document.getElementById('col-input-customrate').value;
+
+                const newCol = {
+                    id: 'col_' + Date.now(),
+                    code,
+                    name,
+                    category,
+                    phone,
+                    isAvailableReal: true,
+                    isAvailableVideoToday: true,
+                    photos: ['https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'],
+                    customRate: customRate ? parseInt(customRate) : null
+                };
+
+                this.collections.push(newCol);
+                this.saveData();
+                this.closeModal('modal-add-collection');
+                this.renderAdminCollections();
+            },
+
+            // ADMIN USER SECURITY & PASSWORDS
+            renderAdminUsers() {
+                const tbody = document.getElementById('admin-users-table');
+                tbody.innerHTML = '';
+
+                if (this.users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">কোনো ক্লায়েন্ট ইউজার রেজিস্টার্ড নেই।</td></tr>`;
+                    return;
+                }
+
+                this.users.forEach(u => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="p-4 font-bold text-white">${u.name}</td>
+                            <td class="p-4 font-mono text-slate-300">${u.phone}</td>
+                            <td class="p-4 font-mono font-bold text-amber-400">${u.password}</td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 rounded text-xs font-semibold ${u.isBanned ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                                    ${u.isBanned ? 'ব্যান করা' : 'সক্রিয়'}
+                                </span>
+                            </td>
+                            <td class="p-4 text-right">
+                                <button onclick="app.toggleUserBan('${u.id}')" class="px-3 py-1 rounded text-xs font-bold ${u.isBanned ? 'bg-emerald-600 text-white' : 'bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white'}">
+                                    ${u.isBanned ? 'আনব্যান' : 'ব্যান করুন'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            },
+
+            toggleUserBan(id) {
+                const u = this.users.find(x => x.id === id);
+                if (u) {
+                    u.isBanned = !u.isBanned;
+                    this.saveData();
+                    this.renderAdminUsers();
+                }
+            },
+
+            // CUSTOM SERVICES & PAYMENT SETTINGS
+            savePaymentSettings() {
+                this.paymentNumbers.bkash = document.getElementById('setting-bkash').value.trim();
+                this.paymentNumbers.nagad = document.getElementById('setting-nagad').value.trim();
+                this.paymentNumbers.rocket = document.getElementById('setting-rocket').value.trim();
+
+                this.saveData();
+                this.updatePaymentNumberDisplays();
+                alert('পেমেন্ট নাম্বার আপডেট সফল হয়েছে!');
+            },
+
+            updatePaymentNumberDisplays() {
+                document.getElementById('pay-num-bkash').innerText = this.paymentNumbers.bkash;
+                document.getElementById('pay-num-nagad').innerText = this.paymentNumbers.nagad;
+                document.getElementById('pay-num-rocket').innerText = this.paymentNumbers.rocket;
+
+                document.getElementById('setting-bkash').value = this.paymentNumbers.bkash;
+                document.getElementById('setting-nagad').value = this.paymentNumbers.nagad;
+                document.getElementById('setting-rocket').value = this.paymentNumbers.rocket;
+            },
+
+            openAddServiceModal() {
+                if (this.customServices.length >= 10) {
+                    return alert('সর্বোচ্চ ১০ টি কাস্টম সার্ভিস এড করা সম্ভব।');
+                }
+                document.getElementById('modal-add-service').classList.remove('hidden');
+            },
+
+            saveCustomService(e) {
+                e.preventDefault();
+                const title = document.getElementById('srv-input-title').value;
+                const rate = parseInt(document.getElementById('srv-input-rate').value);
+                const desc = document.getElementById('srv-input-desc').value;
+
+                this.customServices.push({
+                    id: 'srv_' + Date.now(),
+                    title,
+                    rate,
+                    desc
+                });
+
+                this.saveData();
+                this.closeModal('modal-add-service');
+                this.renderCustomServices();
+                this.renderAdminServicesList();
+            },
+
+            renderCustomServices() {
+                const sec = document.getElementById('custom-services-section');
+                const grid = document.getElementById('custom-services-grid');
+                grid.innerHTML = '';
+
+                if (this.customServices.length === 0) {
+                    sec.classList.add('hidden');
+                    return;
+                }
+
+                sec.classList.remove('hidden');
+                this.customServices.forEach(s => {
+                    grid.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 hover:border-rose-500/50 transition">
+                            <h4 class="font-bold text-white text-lg">${s.title}</h4>
+                            <p class="text-xs text-slate-400">${s.desc || ''}</p>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <span class="text-lg font-bold text-rose-400">${s.rate} BDT</span>
+                                <button onclick="app.proceedToPayment({serviceType:'custom', title:'${s.title}', totalRate:${s.rate}})" class="px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-bold">
+                                    বুকিং করুন
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            renderAdminServicesList() {
+                const list = document.getElementById('admin-services-list');
+                list.innerHTML = '';
+
+                this.customServices.forEach(s => {
+                    list.innerHTML += `
+                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between">
+                            <div>
+                                <h5 class="font-bold text-white text-sm">${s.title}</h5>
+                                <div class="text-xs text-rose-400 font-bold">${s.rate} BDT</div>
+                            </div>
+                            <button onclick="app.deleteCustomService('${s.id}')" class="text-rose-400 hover:text-rose-300 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+            },
+
+            deleteCustomService(id) {
+                this.customServices = this.customServices.filter(s => s.id !== id);
+                this.saveData();
+                this.renderCustomServices();
+                this.renderAdminServicesList();
+            },
+
+            // UTILS
+            startBooking(type) {
+                if (type === 'real') this.navigateTo('real-service');
+                if (type === 'video') this.navigateTo('video-service');
+                if (type === 'liveshow') this.navigateTo('liveshow-service');
+            },
+
+            closeModal(id) {
+                document.getElementById(id).classList.add('hidden');
+            },
+
+            copyToClipboard(elementId) {
+                const text = document.getElementById(elementId).innerText;
+                const tempInput = document.createElement('input');
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert(`কপি সফল হয়েছে: ${text}`);
+            }
+        };
+
+        // Window Onload Initialization
+        window.onload = function() {
+            app.init();
+        };
+    </script>
+</body>
+</html>
